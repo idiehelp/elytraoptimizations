@@ -1,9 +1,9 @@
 {
 	"required": true,
-	"package": "com.example.mixin.client",
+	"package": "com.qkba.elytraoptimization.mixins",
 	"compatibilityLevel": "JAVA_21",
-	"client": [
-		"ExampleClientMixin"
+	"mixins": [
+		"elytraMixin",
 	],
 	"injectors": {
 		"defaultRequire": 1

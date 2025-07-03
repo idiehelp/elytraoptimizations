@@ -22,7 +22,7 @@ loom {
 	splitEnvironmentSourceSets()
 
 	mods {
-		"modid" {
+		"elytraoptimizations" {
 			sourceSet sourceSets.main
 			sourceSet sourceSets.client
 		}
