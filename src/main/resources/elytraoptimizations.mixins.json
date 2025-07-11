@@ -4,6 +4,8 @@
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
 		"elytraMixin",
+		"LivingEntityAccessor",
+		"setFlagAccessor"
 	],
 	"injectors": {
 		"defaultRequire": 1
