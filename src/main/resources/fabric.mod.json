@@ -1,13 +1,17 @@
 {
 	"schemaVersion": 1,
 	"id": "elytraoptimizations",
-	"version": "1.0.0",
+	"version": "1.0.4",
 	"name": "Elytra Optimizations",
 	"description": "Makes the Elytra math faster",
 	"authors": [
 		"qkba"
 	],
-	"license": "CC0-1.0",
+	"contact": {
+		"homepage": "https://modrinth.com/mod/elytra-optimizations",
+		"sources": "https://github.com/idiehelp/elytraoptimizations/tree/1.21"
+	},
+	"license": "MIT",
 	"icon": "assets/elytraoptimizations/icon.png",
 	"environment": "*",
 	"mixins": [

@@ -19,6 +19,51 @@ import java.util.Optional;
 public abstract class elytraMixin {
     private static final int FALL_FLYING_FLAG_INDEX = 7;
 
+    // table resolution: 0.1 degrees per step ==> 3600 entries for all 360 degrees
+    private static final int TABLE_SIZE = 3600;
+    private static final double DEGREE_STEP = 0.1;
+    private static final double[] SIN_TABLE = new double[TABLE_SIZE];
+    private static final double[] COS_TABLE = new double[TABLE_SIZE];
+
+    // static initializer to fill tables once
+    static {
+        for (int i = 0; i < TABLE_SIZE; i++) {
+            double angleRad = Math.toRadians(i * DEGREE_STEP);
+            SIN_TABLE[i] = Math.sin(angleRad);
+            COS_TABLE[i] = Math.cos(angleRad);
+        }
+    }
+
+    // helper to get sin from table using radians input with linear interpolation
+    private static double fastSin(double radians) {
+        double degrees = Math.toDegrees(radians);
+        // normalize angle to [0, 360)
+        degrees = degrees % 360.0;
+        if (degrees < 0) degrees += 360.0;
+
+        double index = degrees / DEGREE_STEP;
+        int indexLow = (int) Math.floor(index) % TABLE_SIZE;
+        int indexHigh = (indexLow + 1) % TABLE_SIZE;
+        double fraction = index - indexLow;
+
+        // linear interpolate between the 2 table values
+        return Math.fma(SIN_TABLE[indexLow], (1 - fraction), (SIN_TABLE[indexHigh] * fraction));
+    }
+
+    // Helper to get cos from table using radians input with linear interpolation
+    private static double fastCos(double radians) {
+        double degrees = Math.toDegrees(radians);
+        degrees = degrees % 360.0;
+        if (degrees < 0) degrees += 360.0;
+
+        double index = degrees / DEGREE_STEP;
+        int indexLow = (int) Math.floor(index) % TABLE_SIZE;
+        int indexHigh = (indexLow + 1) % TABLE_SIZE;
+        double fraction = index - indexLow;
+
+        return Math.fma(COS_TABLE[indexLow], (1 - fraction), (COS_TABLE[indexHigh] * fraction));
+    }
+
     @Inject(method = "travel", at = @At("HEAD"), cancellable = true)
     public void onTravel(Vec3d movementInput, CallbackInfo ci) {
         PlayerEntity player = (PlayerEntity) (Object) this;
@@ -34,11 +79,14 @@ public abstract class elytraMixin {
 
         player.limitFallDistance();
 
-        // Pre-compute pitch-based factors
+        // pre-compute pitch-based variables
         float pitch = player.getPitch();
         float pitchRad = pitch * 0.017453292519943F;
-        double cosPitch = Math.cos(pitchRad);
-        double sinPitch = Math.sin(pitchRad);
+
+        // use lookup tables here instead of Math.sin/cos
+        double cosPitch = fastCos(pitchRad);
+        double sinPitch = fastSin(pitchRad);
+
         double l = cosPitch * cosPitch;
 
         Vec3d velocity = player.getVelocity();
