@@ -49,7 +49,7 @@ public abstract class elytraMixin {
         return Math.fma(SIN_TABLE[indexLow], (1 - fraction), (SIN_TABLE[indexHigh] * fraction));
     }
 
-    // Helper to get cos from table using radians input with linear interpolation
+    // helper to get cos from table using radians input with linear interpolation
     private static double fastCos(double radians) {
         double degrees = Math.toDegrees(radians);
         degrees = degrees % 360.0;
