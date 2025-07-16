@@ -96,27 +96,29 @@ public abstract class elytraMixin {
         double yDelta = gravity * Math.fma(l, 0.75, -1.0);
         velocity = velocity.add(0.0, yDelta, 0.0);
 
-        if (cosPitch > 0.0) {
+        double i = Math.hypot(velocity.x, velocity.z);
+
+        if (i > 0.0) {
             if (velocity.y < 0.0) {
                 double m = velocity.y * -0.1 * l;
                 velocity = velocity.add(
-                        look.x * m / cosPitch,
+                        look.x * m / i,
                         m,
-                        look.z * m / cosPitch
+                        look.z * m / i
                 );
             }
 
             if (pitch < 0.0F) {
                 double m = j * -sinPitch * 0.04;
                 velocity = velocity.add(
-                        -look.x * m / cosPitch,
+                        -look.x * m / i,
                         m * 3.2,
-                        -look.z * m / cosPitch
+                        -look.z * m / i
                 );
             }
 
-            double correctionX = Math.fma(look.x / cosPitch, j, -velocity.x);
-            double correctionZ = Math.fma(look.z / cosPitch, j, -velocity.z);
+            double correctionX = Math.fma(look.x / i, j, -velocity.x);
+            double correctionZ = Math.fma(look.z / i, j, -velocity.z);
             velocity = velocity.add(correctionX * 0.1, 0.0, correctionZ * 0.1);
         }
 
