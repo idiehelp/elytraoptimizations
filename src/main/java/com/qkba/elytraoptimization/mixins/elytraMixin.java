@@ -107,7 +107,6 @@ public abstract class elytraMixin {
                         look.z * m / i
                 );
             }
-
             if (pitch < 0.0F) {
                 double m = j * -sinPitch * 0.04;
                 velocity = velocity.add(
